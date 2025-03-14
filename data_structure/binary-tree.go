@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+
 	"time"
 )
 
@@ -26,12 +27,12 @@ func create(v int) *Tree {
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < 2*v; i++ {
 		temp := rand.Intn(v * 2)
-		t = insert(t, temp)
+		t = t.insert(temp)
 	}
 	return t
 }
 
-func insert(t *Tree, v int) *Tree {
+func (t *Tree) insert(v int) *Tree {
 	if t == nil {
 		return &Tree{nil, v, nil}
 	}
@@ -41,22 +42,36 @@ func insert(t *Tree, v int) *Tree {
 	}
 
 	if v < t.Value {
-		t.Left = insert(t.Left, v)
+		t.Left = t.Left.insert(v)
 		return t
 	}
 
-	t.Right = insert(t.Right, v)
+	t.Right = t.Right.insert(v)
 	return t
 
+}
+
+func (t *Tree) Search(k int) bool {
+
+	if t == nil {
+		return false
+	}
+	if k > t.Value {
+		return t.Right.Search(k)
+
+	} else if k < t.Value {
+		return t.Left.Search(k)
+	}
+
+	return true
 }
 
 func BinaryTree() {
 	tree := create(10)
 	fmt.Println("The value of the root of the tree is", tree.Value)
 	traverse(tree)
-	tree = insert(tree, -10)
-	tree = insert(tree, -2)
+	tree.insert(20)
 	traverse(tree)
-	fmt.Println()
+	fmt.Println(tree.Search(2))
 	fmt.Println("The value of the root of the tree is ", tree.Value)
 }
